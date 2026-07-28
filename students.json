@@ -1,0 +1,29 @@
+[
+    {
+        "name": "Ali",
+        "roll_no": 101,
+        "marks": {
+            "Math": 90,
+            "English": 85,
+            "Science": 88
+        }
+    },
+    {
+        "name": "Sara",
+        "roll_no": 102,
+        "marks": {
+            "Math": 98,
+            "English": 95,
+            "Science": 92
+        }
+    },
+    {
+        "name": "Ahmed",
+        "roll_no": 103,
+        "marks": {
+            "Math": 90,
+            "English": 88,
+            "Science": 87
+        }
+    }
+]
