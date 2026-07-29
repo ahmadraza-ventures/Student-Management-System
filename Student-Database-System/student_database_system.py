@@ -1,4 +1,6 @@
 import sqlite3
+import pandas as pd
+
 
 # Connect Database
 conn = sqlite3.connect("school.db")
@@ -273,3 +275,82 @@ average_marks_by_subject()
 attendance_percentage()
 top_three_students()
 
+
+
+# generate_report() Function
+# Ye function top_three_students() ke baad add karein.
+# -------------------------------
+# Generate Final Report
+# -------------------------------
+def generate_report():
+
+    cursor.execute("""
+    SELECT
+        students.name,
+        students.subject,
+        students.marks,
+
+        ROUND(
+            100.0 *
+            SUM(CASE
+                WHEN attendance.status = 'Present'
+                THEN 1
+                ELSE 0
+            END)
+            /
+            COUNT(attendance.id),2
+        ) AS attendance_percentage
+
+    FROM students
+
+    JOIN attendance
+    ON students.id = attendance.student_id
+
+    GROUP BY students.id
+    """)
+
+    report = cursor.fetchall()
+
+    final_report = []
+
+    for row in report:
+
+        name = row[0]
+        subject = row[1]
+        marks = row[2]
+        attendance = row[3]
+
+        if marks > 75 and attendance > 85:
+            status = "Eligible"
+        else:
+            status = "Not Eligible"
+
+        final_report.append(
+            [name, subject, marks, attendance, status]
+        )
+
+    df = pd.DataFrame(
+        final_report,
+        columns=[
+            "Name",
+            "Subject",
+            "Marks",
+            "Attendance %",
+            "Status"
+        ]
+    )
+
+    print("\n------ Final Report ------")
+    print(df)
+
+    df.to_csv("student_report.csv", index=False)
+
+    print("\nCSV File Created Successfully!")
+
+    generate_report()
+
+
+cursor.close()
+conn.close()
+
+print("\nDatabase Connection Closed Successfully!")
