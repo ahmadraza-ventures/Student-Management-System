@@ -1,8 +1,9 @@
 import sqlite3
 import pandas as pd
 
-
+# -------------------------------
 # Connect Database
+# -------------------------------
 conn = sqlite3.connect("school.db")
 cursor = conn.cursor()
 
@@ -103,7 +104,6 @@ def fetch_students():
 
     if not students:
         print("No Students Found!")
-
     else:
         for student in students:
             print(student)
@@ -126,39 +126,9 @@ def students_above_80():
 
     if not students:
         print("No Student Found!")
-
     else:
         for student in students:
             print(student)
-
-# -------------------------------
-# Function Calls
-# -------------------------------
-
-# Insert Students
-insert_student("Ali", "101", "Math", 85)
-insert_student("Sara", "102", "Physics", 92)
-insert_student("Ahmed", "103", "English", 78)
-
-print("\nInitial Student List")
-fetch_students()
-
-# Update Marks
-update_marks("103", 88)
-
-print("\nAfter Updating Marks")
-fetch_students()
-
-# Delete Student
-delete_student("101")
-
-print("\nAfter Deleting Student")
-fetch_students()
-
-# Students Above 80
-students_above_80()
-
-
 
 # -------------------------------
 # Average Marks By Subject
@@ -178,8 +148,7 @@ def average_marks_by_subject():
     for row in result:
         print(row)
 
-
-        # -------------------------------
+# -------------------------------
 # Add Attendance
 # -------------------------------
 def add_attendance(student_id, date, status):
@@ -193,9 +162,7 @@ def add_attendance(student_id, date, status):
 
     print("Attendance Added Successfully!")
 
-
-
-    # -------------------------------
+# -------------------------------
 # Attendance Percentage
 # -------------------------------
 def attendance_percentage():
@@ -203,11 +170,10 @@ def attendance_percentage():
     cursor.execute("""
     SELECT
         students.name,
-
         ROUND(
             100.0 *
             SUM(CASE
-                WHEN attendance.status='Present'
+                WHEN attendance.status = 'Present'
                 THEN 1
                 ELSE 0
             END)
@@ -216,7 +182,6 @@ def attendance_percentage():
         ) AS attendance_percentage
 
     FROM students
-
     JOIN attendance
     ON students.id = attendance.student_id
 
@@ -230,9 +195,7 @@ def attendance_percentage():
     for row in result:
         print(row)
 
-
-
-        # -------------------------------
+# -------------------------------
 # Top 3 Students
 # -------------------------------
 def top_three_students():
@@ -251,34 +214,6 @@ def top_three_students():
     for student in students:
         print(student)
 
-
-
-# Pehle students insert honge:
-insert_student("Ali", "101", "Math", 85)
-insert_student("Sara", "102", "Physics", 92)
-insert_student("Ahmed", "103", "English", 78)
-
-
-# Phir attendance insert karein:
-add_attendance(1, "2026-07-29", "Present")
-add_attendance(1, "2026-07-30", "Present")
-
-add_attendance(2, "2026-07-29", "Present")
-add_attendance(2, "2026-07-30", "Absent")
-
-add_attendance(3, "2026-07-29", "Present")
-add_attendance(3, "2026-07-30", "Present")
-
-
-# Phir queries call karein:
-average_marks_by_subject()
-attendance_percentage()
-top_three_students()
-
-
-
-# generate_report() Function
-# Ye function top_three_students() ke baad add karein.
 # -------------------------------
 # Generate Final Report
 # -------------------------------
@@ -292,11 +227,13 @@ def generate_report():
 
         ROUND(
             100.0 *
-            SUM(CASE
-                WHEN attendance.status = 'Present'
-                THEN 1
-                ELSE 0
-            END)
+            SUM(
+                CASE
+                    WHEN attendance.status = 'Present'
+                    THEN 1
+                    ELSE 0
+                END
+            )
             /
             COUNT(attendance.id),2
         ) AS attendance_percentage
@@ -347,9 +284,50 @@ def generate_report():
 
     print("\nCSV File Created Successfully!")
 
-    generate_report()
+# ====================================================
+# MAIN PROGRAM
+# ====================================================
 
+# Insert Students (Only Once)
+insert_student("Ali", "101", "Math", 85)
+insert_student("Sara", "102", "Physics", 92)
+insert_student("Ahmed", "103", "English", 78)
 
+print("\nInitial Student List")
+fetch_students()
+
+# Update Marks
+update_marks("103", 88)
+
+print("\nAfter Updating Marks")
+fetch_students()
+
+# Delete Student
+delete_student("101")
+
+print("\nAfter Deleting Student")
+fetch_students()
+
+# Students Above 80
+students_above_80()
+
+# Attendance
+add_attendance(1, "2026-07-29", "Present")
+add_attendance(1, "2026-07-30", "Present")
+
+add_attendance(2, "2026-07-29", "Present")
+add_attendance(2, "2026-07-30", "Absent")
+
+add_attendance(3, "2026-07-29", "Present")
+add_attendance(3, "2026-07-30", "Present")
+
+# Reports
+average_marks_by_subject()
+attendance_percentage()
+top_three_students()
+generate_report()
+
+# Close Database
 cursor.close()
 conn.close()
 
